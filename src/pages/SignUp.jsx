@@ -1,6 +1,6 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-// import { auth } from "../utilities/firebase";
+import { auth } from "../utilities/firebase";
 import OAuth from "../components/OAuth";
 import {
   getAuth,
@@ -18,7 +18,7 @@ function SignUp() {
     password: ""
   });
 
-  const { user, pending } = useContext(AuthContext);
+  const { user, loggedIn } = useContext(AuthContext);
 
   const { name, email, password } = formData;
 
@@ -40,27 +40,28 @@ function SignUp() {
         email,
         password
       );
-
       const user = userCredential.user;
-      console.log(userCredential);
-      console.log(user);
-
       updateProfile(auth.currentUser, {
         displayName: name
       });
 
       const formDataCopy = { ...formData };
-      // delete formDataCopy.password;
+      delete formDataCopy.password;
       formDataCopy.timestamp = serverTimestamp();
 
       await setDoc(doc(db, "users", user.uid), formDataCopy);
-
       navigate("/dashboard");
       console.log("profile added");
     } catch (error) {
       console.log(error);
     }
   };
+
+  useEffect(() => {
+    if (auth.currentUser) {
+      navigate("/dashboard");
+    }
+  }, [navigate]);
 
   return (
     <>

@@ -21,30 +21,6 @@ function SignIn() {
 
   const navigate = useNavigate();
   const auth = getAuth();
-  // console.log(auth);
-  // console.log(user === auth.currentUser);
-
-  // useEffect(() => {
-  //   if (user === auth.currentUser) {
-  //     navigate("/dashboard");
-  //   }
-  // }, [auth.currentUser, navigate, user]);
-
-  setPersistence(auth, browserLocalPersistence)
-    .then(() => {
-      // Existing and future Auth states are now persisted in the current
-      // session only. Closing the window would clear any existing state even
-      // if a user forgets to sign out.
-      // ...
-      // New sign-in will be persisted with session persistence.
-      return signInWithEmailAndPassword(auth, email, password);
-    })
-    .catch((error) => {
-      // Handle Errors here.
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      console.log(errorCode, errorMessage);
-    });
 
   const handleChange = (e) => {
     setFormData((prevState) => ({
@@ -65,10 +41,24 @@ function SignIn() {
       if (userCredential.user) {
         navigate("/dashboard");
       }
+
+      setPersistence(auth, browserLocalPersistence)
+        .then(() => {
+          return signInWithEmailAndPassword(auth, email, password);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     } catch (error) {
       console.log("Bad User Credentials");
     }
   };
+
+  useEffect(() => {
+    if (auth.currentUser) {
+      navigate("/dashboard");
+    }
+  }, [navigate, auth.currentUser]);
 
   return (
     <>
