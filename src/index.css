@@ -126,3 +126,10 @@ button {
 .instead-link {
   color: inherit;
 }
+
+.register-btns {
+  display: flex;
+  gap: 5px;
+  justify-content: flex-end;
+  padding-right: 10px;
+}
