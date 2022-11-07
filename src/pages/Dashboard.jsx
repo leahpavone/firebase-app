@@ -1,4 +1,3 @@
-
 /* eslint-disable no-restricted-globals */
 import { useContext, useState, useRef } from "react";
 import AuthContext from "../context/AuthContext";
@@ -40,13 +39,8 @@ function Dashboard() {
 
   const onLogout = () => {
     auth.signOut();
-    setPending(true);
     navigate("/sign-in");
-    setPending(false);
-    setUser(null);
-    setLoggedIn(false);
   };
-
 
   const onSubmit = async () => {
     try {
