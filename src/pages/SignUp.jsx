@@ -17,7 +17,9 @@ function SignUp() {
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
 
+
   const { user } = useContext(AuthContext);
+
 
   const { name, email, password } = formData;
 
@@ -89,6 +91,7 @@ function SignUp() {
       });
 
       const formDataCopy = { ...formData };
+
       // delete formDataCopy.password;
       formDataCopy.createdAt = serverTimestamp();
 
@@ -106,6 +109,7 @@ function SignUp() {
       navigate("/");
     }
   }, [user, navigate]);
+
 
   return (
     <>

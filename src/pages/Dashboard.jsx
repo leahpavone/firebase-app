@@ -1,3 +1,4 @@
+
 /* eslint-disable no-restricted-globals */
 import { useContext, useState, useRef } from "react";
 import AuthContext from "../context/AuthContext";
@@ -9,6 +10,7 @@ import {
   reauthenticateWithCredential
 } from "firebase/auth";
 import { updateDoc, doc, serverTimestamp } from "firebase/firestore";
+
 import { auth } from "../utilities/firebase";
 import { useNavigate, Link } from "react-router-dom";
 import visibilityIcon from "../assets/visibilityIcon.svg";
@@ -38,8 +40,13 @@ function Dashboard() {
 
   const onLogout = () => {
     auth.signOut();
-    navigate("/");
+    setPending(true);
+    navigate("/sign-in");
+    setPending(false);
+    setUser(null);
+    setLoggedIn(false);
   };
+
 
   const onSubmit = async () => {
     try {

@@ -8,6 +8,7 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [pending, setPending] = useState(true);
   const [user, setUser] = useState(null);
+  const [loggedIn, setLoggedIn] = useState(false);
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
@@ -38,11 +39,14 @@ export const AuthProvider = ({ children }) => {
   //   });
   // }, []);
 
+
   return (
     <AuthContext.Provider
       value={{
         pending,
         user,
+        loggedIn,
+        setLoggedIn,
         setPending,
         setUser
       }}

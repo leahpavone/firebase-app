@@ -38,6 +38,14 @@ function SignIn() {
         setActiveUser(true);
         navigate("/dashboard");
       }
+
+      setPersistence(auth, browserLocalPersistence)
+        .then(() => {
+          return signInWithEmailAndPassword(auth, email, password);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     } catch (error) {
       setActiveUser(false);
       console.log("Bad User Credentials");
@@ -49,6 +57,7 @@ function SignIn() {
       navigate("/");
     }
   }, [user, navigate]);
+
 
   return (
     <>

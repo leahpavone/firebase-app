@@ -130,6 +130,7 @@ button {
   color: inherit;
 }
 
+
 .error-msg {
   color: red;
   font-weight: 600;
@@ -355,3 +356,11 @@ button {
   background-color: #00cc66;
   border-radius: 50%;
 } */
+
+.register-btns {
+  display: flex;
+  gap: 5px;
+  justify-content: flex-end;
+  padding-right: 10px;
+}
+
