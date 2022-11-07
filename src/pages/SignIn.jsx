@@ -1,10 +1,6 @@
-import { useState, useEffect, useContext } from "react";
-import {
-  getAuth,
-  signInWithEmailAndPassword,
-  setPersistence,
-  browserLocalPersistence
-} from "firebase/auth";
+import { useState, useContext, useEffect } from "react";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../utilities/firebase";
 import OAuth from "../components/OAuth";
 import { Link, useNavigate } from "react-router-dom";
 import AuthContext from "../context/AuthContext";
@@ -14,19 +10,20 @@ function SignIn() {
     email: "",
     password: ""
   });
+  const [activeUser, setActiveUser] = useState(true);
 
-  const { user, pending } = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
 
   const { email, password } = formData;
 
   const navigate = useNavigate();
-  const auth = getAuth();
 
   const handleChange = (e) => {
     setFormData((prevState) => ({
       ...prevState,
       [e.target.id]: e.target.value
     }));
+    setActiveUser(true);
   };
 
   const handleSubmit = async (e) => {
@@ -37,8 +34,8 @@ function SignIn() {
         email,
         password
       );
-
       if (userCredential.user) {
+        setActiveUser(true);
         navigate("/dashboard");
       }
 
@@ -50,19 +47,22 @@ function SignIn() {
           console.log(error);
         });
     } catch (error) {
+      setActiveUser(false);
       console.log("Bad User Credentials");
     }
   };
 
   useEffect(() => {
-    if (auth.currentUser) {
-      navigate("/dashboard");
+    if (user) {
+      navigate("/");
     }
-  }, [navigate, auth.currentUser]);
+  }, [user, navigate]);
+
 
   return (
     <>
       <h2 className="page-heading">Sign In</h2>
+      {activeUser ? "" : <div className="error-msg">Bad User Credentials</div>}
       <div className="form-container">
         <form onSubmit={handleSubmit}>
           <input
@@ -78,6 +78,7 @@ function SignIn() {
             placeholder="Password"
           />
           <button type="submit">Submit</button>
+          <Link to={"/forgot-password"}>Forgot Password?</Link>
         </form>
         <OAuth />
         <div className="instead-div">

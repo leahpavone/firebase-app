@@ -2,11 +2,7 @@ import { useState, useContext, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { auth } from "../utilities/firebase";
 import OAuth from "../components/OAuth";
-import {
-  getAuth,
-  createUserWithEmailAndPassword,
-  updateProfile
-} from "firebase/auth";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { setDoc, doc, serverTimestamp } from "firebase/firestore";
 import { db } from "../utilities/firebase";
 import AuthContext from "../context/AuthContext";
@@ -17,8 +13,13 @@ function SignUp() {
     email: "",
     password: ""
   });
+  const [nameError, setNameError] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
 
-  const { user, loggedIn } = useContext(AuthContext);
+
+  const { user } = useContext(AuthContext);
+
 
   const { name, email, password } = formData;
 
@@ -29,27 +30,73 @@ function SignUp() {
       ...prevState,
       [e.target.id]: e.target.value
     }));
+    // validateForm({ name, email, password });
   };
+
+  const validateForm = ({ name, email, password }) => {
+    if (name.length < 0) {
+      setNameError("Name Cannot be empty");
+    }
+
+    const emailVal = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
+    if (!emailVal.test(email) || emailVal === 0) {
+      setEmailError("Please enter a valid email");
+    }
+
+    if (password.length < 6) {
+      setPasswordError("Password should be at least 6 characters long");
+    }
+  };
+
+  // const validateName = ({ name }) => {
+  //   if (name.length < 0) {
+  //     setNameError("Name Cannot be empty");
+  //   } else {
+  //     setNameError("");
+  //   }
+  // };
+
+  // const validateEmail = ({ email }) => {
+  //   const emailVal = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
+  //   if (!emailVal.test(email) || emailVal === 0) {
+  //     setEmailError("Please enter a valid email");
+  //   } else {
+  //     setEmailError("");
+  //   }
+  // };
+
+  // const validatePassword = ({ password }) => {
+  //   if (password.length < 5) {
+  //     setPasswordError("Password should be at least 6 characters long");
+  //   } else {
+  //     setPasswordError("");
+  //   }
+  // };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Function that checks if name, email and password are valid
+    validateForm({ name, email, password });
+
     try {
-      const auth = getAuth();
       const userCredential = await createUserWithEmailAndPassword(
         auth,
         email,
         password
       );
-      const user = userCredential.user;
+
       updateProfile(auth.currentUser, {
         displayName: name
       });
 
       const formDataCopy = { ...formData };
-      delete formDataCopy.password;
-      formDataCopy.timestamp = serverTimestamp();
 
-      await setDoc(doc(db, "users", user.uid), formDataCopy);
+      // delete formDataCopy.password;
+      formDataCopy.createdAt = serverTimestamp();
+
+      await setDoc(doc(db, "users", userCredential.user.uid), formDataCopy);
+
       navigate("/dashboard");
       console.log("profile added");
     } catch (error) {
@@ -58,10 +105,11 @@ function SignUp() {
   };
 
   useEffect(() => {
-    if (auth.currentUser) {
-      navigate("/dashboard");
+    if (user) {
+      navigate("/");
     }
-  }, [navigate]);
+  }, [user, navigate]);
+
 
   return (
     <>
@@ -76,6 +124,7 @@ function SignUp() {
             value={name}
             required
           />
+          {nameError && <div className="error-msg">{nameError}</div>}
           <input
             id="email"
             type="text"
@@ -84,6 +133,7 @@ function SignUp() {
             value={email}
             required
           />
+          {emailError && <div className="error-msg">{emailError}</div>}
           <input
             id="password"
             type="password"
@@ -92,6 +142,7 @@ function SignUp() {
             value={password}
             required
           />
+          {passwordError && <div className="error-msg">{passwordError}</div>}
           <button type="submit">Submit</button>
         </form>
         <OAuth />

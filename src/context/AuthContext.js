@@ -11,18 +11,34 @@ export const AuthProvider = ({ children }) => {
   const [loggedIn, setLoggedIn] = useState(false);
 
   useEffect(() => {
-    setPending(true);
     onAuthStateChanged(auth, (user) => {
-      setPending(false);
+      setPending(true);
       setUser(auth.currentUser);
-      setLoggedIn(true);
       setPending(false);
+      // console.log(auth.currentUser);
     });
   }, []);
 
   if (pending) {
     return <Spinner />;
   }
+
+  // return { pending, user };
+
+  // useEffect(() => {
+  //   const auth = getAuth();
+  //   onAuthStateChanged(auth, (user) => {
+  //     if (user) {
+  //       console.log("Authenticated", user);
+  //     } else {
+  //       console.log("signed out");
+  //     }
+  // setPending(false);
+  // setUser(auth.currentUser);
+  // setPending(false);
+  //   });
+  // }, []);
+
 
   return (
     <AuthContext.Provider

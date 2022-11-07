@@ -1,25 +1,24 @@
-import { Link, useNavigate } from "react-router-dom";
-import { getAuth } from "firebase/auth";
-import Dashboard from "./Dashboard";
-import SignIn from "./SignIn";
+
+import { useContext } from "react";
+import { Link } from "react-router-dom";
+import AuthContext from "../context/AuthContext";
+
 
 function Home() {
-  const auth = getAuth();
+  const { user } = useContext(AuthContext);
 
   return (
     <>
-      {/* <nav> */}
-      {auth.currentUser ? (
-        <Link to="/dashboard"> {auth.currentUser.displayName}'s Dashboard</Link>
-      ) : (
-        // <Dashboard />
-        // <SignIn />
-        <div className="register-btns">
-          <Link to="/sign-up">Sign up</Link> /{" "}
-          <Link to="/sign-in">Sign in</Link>
-        </div>
-      )}
-      {/* </nav> */}
+      <nav>
+        {user ? (
+          <Link to="/dashboard">Dashboard</Link>
+        ) : (
+          <div>
+            <Link to="/sign-up">Sign up</Link> /{" "}
+            <Link to="/sign-in">Sign in</Link>
+          </div>
+        )}
+      </nav>
       <h2>Home Page</h2>
     </>
   );
