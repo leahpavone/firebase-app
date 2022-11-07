@@ -5,6 +5,7 @@ import SignUp from "./pages/SignUp";
 import SignIn from "./pages/SignIn";
 import PrivateRoute from "./components/PrivateRoute";
 import Home from "./pages/Home";
+import ForgotPassword from "./pages/ForgotPassword";
 
 function App() {
   return (
@@ -18,6 +19,8 @@ function App() {
             <Route path="/dashboard" element={<PrivateRoute />}>
               <Route path="/dashboard" element={<Dashboard />} />
             </Route>
+
+            <Route path="forgot-password" element={<ForgotPassword />} />
           </Routes>
         </Router>
       </AuthProvider>

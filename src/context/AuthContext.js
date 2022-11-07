@@ -1,6 +1,7 @@
 import { createContext, useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../utilities/firebase";
+import Spinner from "../components/Spinner";
 
 const AuthContext = createContext();
 
@@ -9,14 +10,17 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    setPending(true);
     onAuthStateChanged(auth, (user) => {
-      setPending(false);
+      setPending(true);
       setUser(auth.currentUser);
-      // console.log(auth.currentUser);
       setPending(false);
+      // console.log(auth.currentUser);
     });
   }, []);
+
+  if (pending) {
+    return <Spinner />;
+  }
 
   // return { pending, user };
 
